@@ -31,11 +31,14 @@ function formSubmit(e) {
 function addGalleryMarkup({ totalHits, hits }) {
   if (hits.length === 0) {
     Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+    loadMoreBtn.classList.add('is-hidden');
     return;
   }
   totalRenderedPhotos += hits.length;
   if (totalRenderedPhotos === totalHits) {
     Notify.info("We're sorry, but you've reached the end of search results.");
+
+    loadMoreBtn.classList.add('is-hidden');
     return;
   }
   galleryEl.insertAdjacentHTML('beforeend', photoCardTpl(hits));

@@ -1,4 +1,3 @@
-import { Notify } from 'notiflix';
 export default class PicsApiService {
   constructor() {
     this.query = '';
