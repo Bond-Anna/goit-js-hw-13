@@ -15,7 +15,14 @@
     <!-- Так добавляются фрагменты в главные HTML-файлы страниц. -->
     <include src="./partials/search-form.html"></include>
     <include src="./partials/gallery.html"></include>
-    <button type="button" class="load-more">Load more</button>
+    <button type="button" class="load-more">
+      <span
+        class="spinner-border spinner-border-sm spinner is-hidden"
+        role="status"
+        aria-hidden="true"
+      ></span
+      ><span class="label">Load more</span>
+    </button>
 
     <!-- Скрипт идёт последним в разметке. В нём уже подключен главный SASS-файл. -->
     <script src="./index.js"></script>
