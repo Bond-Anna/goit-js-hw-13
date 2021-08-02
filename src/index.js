@@ -1,37 +1,53 @@
 import './sass/main.scss';
+import { Notify } from 'notiflix';
 import PicsApiService from './js/fetchCards';
-import LoadMoreBtn from './js/load-more-btn';
 import photoCardTpl from './templates/photo-card.hbs';
 
-const refs = {
-  searchForm: document.querySelector('.search-form'),
-  galleryEl: document.querySelector('.gallery'),
-};
+const searchForm = document.querySelector('.search-form');
+const galleryEl = document.querySelector('.gallery');
+const loadMoreBtn = document.querySelector('.load-more');
+
+let totalRenderedPhotos = 0;
 
 const picsApiService = new PicsApiService();
-const loadMoreBtn = new LoadMoreBtn({
-  selector: '.load-more',
-});
-console.log(loadMoreBtn);
-refs.searchForm.addEventListener('submit', formSubmit);
 
+searchForm.addEventListener('submit', formSubmit);
 function formSubmit(e) {
   e.preventDefault();
+  loadMoreBtn.classList.add('is-hidden');
   clearGallery();
   picsApiService.query = e.currentTarget.elements.searchQuery.value;
   picsApiService.resetPage();
-  picsApiService.fetchCards().then(addGalleryMarkup);
+  totalRenderedPhotos = 0;
+
+  picsApiService
+    .fetchCards()
+    .then(addGalleryMarkup)
+    .catch(error => {
+      Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+    });
 }
 
-// loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
+function addGalleryMarkup({ totalHits, hits }) {
+  if (hits.length === 0) {
+    Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+    return;
+  }
+  totalRenderedPhotos += hits.length;
+  if (totalRenderedPhotos === totalHits) {
+    Notify.info("We're sorry, but you've reached the end of search results.");
+    return;
+  }
+  galleryEl.insertAdjacentHTML('beforeend', photoCardTpl(hits));
+  loadMoreBtn.classList.remove('is-hidden');
+  Notify.success(`Hooray! We found ${totalRenderedPhotos} images out of ${totalHits}.`);
+}
+
+loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
 function onLoadMoreBtnClick() {
   picsApiService.fetchCards().then(addGalleryMarkup);
 }
 
-function addGalleryMarkup(photos) {
-  refs.galleryEl.insertAdjacentHTML('beforeend', photoCardTpl(photos));
-}
-
 function clearGallery() {
-  refs.galleryEl.innerHTML = '';
+  galleryEl.innerHTML = '';
 }

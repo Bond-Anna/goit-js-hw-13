@@ -11,19 +11,15 @@ export default class PicsApiService {
       `https://pixabay.com/api/?key=${API_KEY}&q=${this.query}&image_type=photo&orientation=horizontal&safesearch=true&page=${this.page}&per_page=40`,
     )
       .then(response => {
-        if (response.totalHits === 0) {
-          throw new Error(messade);
+        if (!response.ok) {
+          throw new Error(response.status);
         }
         return response.json();
       })
-      .then(photos => {
+      .then(({ totalHits, hits }) => {
         this.page += 1;
-        return photos.hits;
-      })
-      .catch(error => {
-        const message = Notify.failure(
-          'Sorry, there are no images matching your search query. Please try again.',
-        );
+        console.log({ totalHits, hits });
+        return { totalHits, hits };
       });
   }
   get searchQuery() {
