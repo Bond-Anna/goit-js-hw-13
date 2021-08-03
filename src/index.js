@@ -1,5 +1,7 @@
 import './sass/main.scss';
 import { Notify } from 'notiflix';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 import PicsApiService from './js/fetchCards';
 import photoCardTpl from './templates/photo-card.hbs';
 
@@ -10,6 +12,7 @@ const loadMoreBtn = document.querySelector('.load-more');
 let totalRenderedPhotos = 0;
 
 const picsApiService = new PicsApiService();
+const lightbox = new SimpleLightbox('.gallery a');
 
 searchForm.addEventListener('submit', formSubmit);
 function formSubmit(e) {
@@ -37,13 +40,12 @@ function addGalleryMarkup({ totalHits, hits }) {
   totalRenderedPhotos += hits.length;
   if (totalRenderedPhotos === totalHits) {
     Notify.info("We're sorry, but you've reached the end of search results.");
-
     loadMoreBtn.classList.add('is-hidden');
-    return;
   }
   galleryEl.insertAdjacentHTML('beforeend', photoCardTpl(hits));
+  lightbox.refresh();
   loadMoreBtn.classList.remove('is-hidden');
-  Notify.success(`Hooray! We found ${totalRenderedPhotos} images out of ${totalHits}.`);
+  Notify.success(`Hooray! We found ${totalRenderedPhotos} images.`);
 }
 
 loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
