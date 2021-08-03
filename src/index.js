@@ -38,7 +38,7 @@ function addGalleryMarkup({ totalHits, hits }) {
     return;
   }
   totalRenderedPhotos += hits.length;
-  if (totalRenderedPhotos === totalHits) {
+  if (totalRenderedPhotos > 40) {
     Notify.info("We're sorry, but you've reached the end of search results.");
     loadMoreBtn.classList.add('is-hidden');
   }
