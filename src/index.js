@@ -37,17 +37,14 @@ function addGalleryMarkup({ totalHits, hits }) {
     loadMoreBtn.classList.add('is-hidden');
     return;
   }
-  if (hits.length < 40) {
+
+  totalRenderedPhotos += hits.length;
+  if (totalRenderedPhotos >= totalHits) {
     Notify.info("We're sorry, but you've reached the end of search results.");
     loadMoreBtn.classList.add('is-hidden');
-    galleryEl.insertAdjacentHTML('beforeend', photoCardTpl(hits));
     return;
   }
-  totalRenderedPhotos += hits.length;
-  if (totalRenderedPhotos === totalHits) {
-    Notify.info("We're sorry, but you've reached the end of search results.");
-    loadMoreBtn.classList.add('is-hidden');
-  }
+
   galleryEl.insertAdjacentHTML('beforeend', photoCardTpl(hits));
   lightbox.refresh();
   loadMoreBtn.classList.remove('is-hidden');
